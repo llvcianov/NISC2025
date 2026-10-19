@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantPen - Simulatore</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .simulator-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; align-items: start; }
+        .controls-panel, .log-panel { background-color: #fff; border-radius: 8px; padding: 1rem; }
+        .control-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
+        .control-group label { font-weight: 500; }
+        #log-container { height: 70vh; overflow-y: auto; background-color: #2d3748; color: #fff; padding: 1rem; border-radius: 8px; font-family: 'Courier New', Courier, monospace; font-size: 0.9em; }
+        .log-entry { margin-bottom: 0.5rem; }
+        .log-source { font-weight: bold; margin-right: 0.5rem; }
+        .source-esp-tx { color: #63b3ed; } /* Blu */
+        .source-stm32-rx { color: #48bb78; } /* Verde */
+        .source-system { color: #a0aec0; } /* Grigio */
+        .source-simulator { color: #f6ad55; } /* Arancione */
+        .source-esp-err { color: #f56565; } /* Rosso */
+        pre { white-space: pre-wrap; word-wrap: break-word; margin: 0; }
+    </style>
+</head>
+<body style="background-color: #f7fafc;">
+    <div id="app-container" style="max-width: 1200px; margin: 2rem auto;">
+        <header class="page-header" style="justify-content: space-between;">
+            <h2>Simulatore STM32 & Logger</h2>
+            <a href="/" class="btn-secondary">Torna alla WebApp</a>
+        </header>
+        <main class="simulator-grid">
+            <div class="controls-panel">
+                <h3>Controlli Simulatore</h3>
+                <div class="control-group">
+                    <label for="master-sim-toggle">Attiva Simulatore Master</label>
+                    <label class="switch">
+                        <input type="checkbox" id="master-sim-toggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label for="serial-debug-toggle">Abilita Log Seriale (Debug)</label>
+                    <label class="switch">
+                        <input type="checkbox" id="serial-debug-toggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                
+                <h4>Risposte Simulate (Manuali)</h4>
+                <div class="control-group">
+                    <label>Tipo di Misura</label>
+                    <select id="meas-type" style="padding: 0.5rem; border-radius: 4px;">
+                        <option value="GOOD">Misura Buona</option>
+                        <option value="DRY">Terreno Secco</option>
+                    </select>
+                </div>
+                <p class="text-muted" style="font-size: 0.9em;">Il simulatore automatico risponderà ai comandi quando attivo. Usa i pulsanti manuali se il simulatore master è disattivo.</p>
+            </div>
+            <div class="log-panel">
+                <h3>Log Comunicazione Seriale</h3>
+                <div id="log-container"></div>
+            </div>
+        </main>
+    </div>
+    <script src="simulator.js"></script>
+</body>
+</html>

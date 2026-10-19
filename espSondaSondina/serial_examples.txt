@@ -1,0 +1,16 @@
+# Esempi di messaggi seriali (line-delimited JSON)
+
+# 1) INIT_DATA - inviato dallo STM32 dopo SET_RTC
+{"type":"INIT_DATA","plantTypes":[{"id":1,"name":"Cactus"},{"id":2,"name":"Pomodoro"},{"id":3,"name":"Basilico"}],"registeredPlants":[{"plantId":101,"typeId":2,"name":"Pomodoro Giardino","notes":"angolo sud"}]}
+
+# 2) PLANT_ASSIGNED - STM32 risponde quando registra una nuova pianta
+{"type":"PLANT_ASSIGNED","newPlantId":123,"name":"mioPomodoro","typeId":2}
+
+# 3) MEAS_RESULTS - risultati di una misurazione
+{"type":"MEAS_RESULTS","plantId":101,"soilHumidity":45.7,"lux":12345,"airTemp":23.4,"soilTemp":18.2,"timestamp":"2025-09-03T18:30:00Z","scoreNow":76.4,"scoreHistoric":82.1}
+
+# 4) ACK
+{"type":"ACK","cmd":"START_MEAS"}
+
+# 5) ERR
+{"type":"ERR","cmd":"START_MEAS","msg":"sensor error"}

@@ -1,0 +1,140 @@
+Fase 1: connessione.
+
+-wa: bottone: "collega sonda", invia alla nucleo data e ora del sistema.
+
+
+-nc: salva data e ora, invia instanzePianta e tipiPianta
+	formati: istanzePianta { nomePianta, idTipo, idPianta}
+		 tipiPianta    { idTipo, nomeTipo}
+		
+COMUNICAZIONE:
+wa_out: INIT e RTC
+
+nc_in: INIT e RTC
+
+nc_out: catalogoPiante (int: idTipo, string nomeTipo) +
+	istanzePiante (int: idTipo, int:  idPianta, int: nomePianta)
+
+wa_in:  catalogoPiante (int: idTipo, string nomeTipo) +
+	istanzePiante (int: idTipo, int:  idPianta, int: nomePianta)
+
+
+
+Fase 2: home page caricata.
+
+-wa: l'utente può decidere tra 3 azioni: "aggiungi una nuova pianta", "effettua misurazione" (selezionando una istanza di pianta), "visualizza storico" (selezionando una pianta).
+
+
+Caso 1: "aggiungi una nuova pianta"
+
+-wa: utente seleziona un tipo, aggiunge un nome proprio per l'istanza, bottone "aggiungi". Invia alla nucleo idTipo e nomePianta, aspetta conferma.
+
+-nc: crea una nuova istanza di pianta con i dati ricevuti, la salva in memoria, manda conferma.
+
+-wa: ripete le Fasi 1 e 2. ripete la INIT. In modo tale da visualizzare la nuova pianta creata.
+
+COMUNICAZIONE:
+
+wa_out: cmd: "ADD_PLANT", int: idTipo, string: nomePianta
+nc_in: cmd: "ADD_PLANT", int: idTipo, string: nomePianta
+nc_out: null (conferma)
+wa_in: (conferma)
+
+
+
+Caso 2: "esegui misurazione"
+
+-wa: l'utente clicca su una pianta del giardino e chiede una nuova misurazione. la wa invia alla nucleo un flag "m", idTipo e idPianta.
+
+-nc: procedura di misura. Salva la misura in memoria. Invia la misura alla wa.
+		formato: Misurazione {temperatura_valore, luce_valore, umidità_esterna_valore, umidità_interna_valore, temperatura_score, luce_score, umidità_esterna_score, umidità_interna_score, score_totale, temperatura_stringa, luce_stringa, umidità_esterna_stringa, umidità_interna_stringa}
+
+NOTA: non si evolve real-time, è uno snapshot istantaneo.
+
+
+COMUNICAZIONE:
+
+wa_out: cmd:"START_MEAS", int: idPianta
+
+nc_in: cmd:"START_MEAS", int: idPianta
+
+nc_out: Misurazione {int: temperatura_valore, int: luce_valore, int: umidità_esterna_valore, int: umidità_interna_valore, int: temperatura_score, int: luce_score, int: umidità_esterna_score, int: umidità_interna_score, int: score_totale, string: temperatura_stringa, string: luce_stringa, string: umidità_esterna_stringa, string: umidità_interna_stringa}
+
+wa_in: Misurazione {int: temperatura_valore, int: luce_valore, int: umidità_esterna_valore, int: umidità_interna_valore, int: temperatura_score, int: luce_score, int: umidità_esterna_score, int: umidità_interna_score, int: score_totale, string: temperatura_stringa, string: luce_stringa, string: umidità_esterna_stringa, string: umidità_interna_stringa}
+
+
+
+
+
+
+Caso 3: "visualizza storico"
+
+-wa_ l'utente clicca su una pianta del giardino e chiede lo storico. la wa invia alla nucleo un flag "s", idTipo e idPianta.
+
+-nc: recupera in memoria tutte le misurazioni relative a quella pianta. Le invia alla wa.
+		formato: score_avg, arrayMisurazioni {data e ora, temperatura_score, luce_score, umidità_esterna_score, umidità_interna_score, score_totale} 
+
+
+COMUNICAZIONE:
+
+wa_out: cmd: "GET_HISTORY", INT: idPianta
+
+nc_in: cmd: "GET_HISTORY", INT: idPianta
+
+nc_out: int: score_avg, arrayMisurazioni {data e ora, temperatura_score, luce_score, umidità_esterna_score, umidità_interna_score, score_totale}
+
+wa_in: int: score_avg, arrayMisurazioni {data e ora, temperatura_score, luce_score, umidità_esterna_score, umidità_interna_score, score_totale}
+
+
+
+
+
+COSA PASSA SUL SERIALE:
+
+
+
+BLOCCO1: HOME
+
+wa_out: INIT e RTC
+
+nc_in: INIT e RTC
+
+nc_out: catalogoPiante (int: idTipo, string nomeTipo) +
+	istanzePiante (int: idTipo, int:  idPianta, int: nomePianta)
+
+wa_in:  catalogoPiante (int: idTipo, string nomeTipo) +
+	istanzePiante (int: idTipo, int:  idPianta, int: nomePianta)
+
+
+
+BLOCCO2: ADD_PLANT
+
+wa_out: cmd: "ADD_PLANT", int: idTipo, string: nomePianta
+
+nc_in: cmd: "ADD_PLANT", int: idTipo, string: nomePianta
+
+nc_out: null (conferma)
+
+wa_in: (conferma)
+
+
+BLOCCO3: ADD_MEAS
+
+wa_out: cmd:"START_MEAS", int: idPianta
+
+nc_in: cmd:"START_MEAS", int: idPianta
+
+nc_out: Misurazione {int: temperatura_valore, int: luce_valore, int: umidità_esterna_valore, int: umidità_interna_valore, int: temperatura_score, int: luce_score, int: umidità_esterna_score, int: umidità_interna_score, int: score_totale, string: temperatura_stringa, string: luce_stringa, string: umidità_esterna_stringa, string: umidità_interna_stringa}
+
+wa_in: Misurazione {int: temperatura_valore, int: luce_valore, int: umidità_esterna_valore, int: umidità_interna_valore, int: temperatura_score, int: luce_score, int: umidità_esterna_score, int: umidità_interna_score, int: score_totale, string: temperatura_stringa, string: luce_stringa, string: umidità_esterna_stringa, string: umidità_interna_stringa}
+
+
+BLOCCO4: GET_HISTORY
+
+wa_out: cmd: "GET_HISTORY", INT: idPianta
+
+nc_in: cmd: "GET_HISTORY", INT: idPianta
+
+nc_out: int: score_avg, arrayMisurazioni {data e ora, temperatura_score, luce_score, umidità_esterna_score, umidità_interna_score, score_totale}
+
+wa_in: int: score_avg, arrayMisurazioni {data e ora, temperatura_score, luce_score, umidità_esterna_score, umidità_interna_score, score_totale}

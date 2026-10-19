@@ -1,0 +1,11 @@
+Guida all'utilizzo
+1)Collega alla alimentazione
+2)Si dovrebbe collegare a Internet di Luciano (UeUe). Se non succede in 30 secondi, crea una rete wifi PlanetPen con password: password123
+3)Collegarsi via web a plantpen.local e plantpen.local/simulator
+4)Disattivare le funzioni dal simulatore prima di cliccare "Collega Sonda"
+5)Divertirsi!
+
+Installazione LittleFs
+https://github.com/earlephilhower/arduino-littlefs-upload
+serve a importare i file nella esp che si trovano i in espSondaSondina/Data/… . Ogni file che modificate .js .html deve poi essere rifleshato PRIMA del .ino (se modificato).
+se non ci sono modifiche al .ino, basta riflashare littlefs direttamente e aggiornare.

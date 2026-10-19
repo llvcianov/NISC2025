@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantPen</title>
+    
+    <!-- NUOVO: Aggiunta Favicon con emoji -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+    
+    <!-- NUOVO: Aggiunta del Web App Manifest per l'installazione -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div id="app-container">
+        
+        <!-- Pagina di Inizializzazione -->
+        <div id="init-page" class="page active">
+            <div class="init-content">
+                <div class="logo">🌱</div>
+                <h1>PlantPen</h1>
+                <p>Connetti la sonda per iniziare a monitorare il tuo giardino digitale.</p>
+                <button id="init-button" class="btn-primary btn-large">Collega Sonda</button>
+            </div>
+        </div>
+
+        <!-- Pagina Home -->
+        <div id="home-page" class="page">
+            <header class="page-header">
+                <h2>Home</h2>
+                <button class="btn-icon" data-action="go-to-settings">⚙️</button>
+            </header>
+            <main class="page-content">
+                <div id="wifi-status-banner" class="card wifi-banner hidden"></div>
+                <section>
+                    <h3>Aggiungi una Nuova Pianta</h3>
+                    <div id="plant-types-carousel" class="carousel"></div>
+                </section>
+                
+                <section>
+                    <div class="section-header">
+                        <h3>Il Mio Giardino</h3>
+                        <div class="filters">
+                            <select id="filter-plant-type"><option value="all">Tutti i tipi</option></select>
+                            <select id="filter-sort"><option value="name_asc">Nome (A-Z)</option><option value="name_desc">Nome (Z-A)</option></select>
+                        </div>
+                    </div>
+                    <div id="garden-plants-container"></div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Pagina Risultati Misurazione -->
+        <div id="measurement-page" class="page">
+            <header class="page-header">
+                <button class="btn-back" data-target="home-page">← Home</button>
+                <h2 id="measurement-plant-name">Risultati Misurazione</h2>
+            </header>
+            <main class="page-content" id="measurement-results-container"></main>
+        </div>
+
+        <!-- Pagina Storico -->
+        <div id="history-page" class="page">
+            <header class="page-header">
+                <button class="btn-back" data-target="home-page">← Home</button>
+                <h2 id="history-plant-name">Storico</h2>
+            </header>
+            <main class="page-content">
+                <div class="card history-summary">
+                    <h3>Punteggio Medio</h3>
+                    <div class="score-value" id="history-avg-score">0.0</div>
+                </div>
+                <div id="history-ai-advice-container" class="card ai-advice hidden"></div>
+                <div class="text-center" style="margin: 1.5rem 0;">
+                    <button id="show-chart-button" class="btn-primary">Mostra Grafico</button>
+                </div>
+                <div id="history-chart-container" class="card chart-container hidden"><canvas id="history-chart"></canvas></div>
+                <div id="history-list-container"></div>
+            </main>
+        </div>
+        
+        <!-- Pagina Impostazioni -->
+        <div id="settings-page" class="page">
+            <header class="page-header">
+                <button class="btn-back" data-target="home-page">← Home</button>
+                <h2>Impostazioni</h2>
+            </header>
+            <main class="page-content">
+                <section>
+                    <h3>Connessione WiFi</h3>
+                    <div id="wifi-settings-status" class="card"></div>
+                    <div class="card">
+                        <h4>Connetti a una rete esistente</h4>
+                        <p>Collega la sonda a Internet per ricevere i consigli dall'AI.</p>
+                        <div id="wifi-scan-list"></div>
+                        <button id="scan-wifi-button" class="btn-secondary">Cerca Reti</button>
+                        <form id="wifi-connect-form" class="hidden">
+                            <div class="form-group">
+                                <label for="wifi-ssid">Nome Rete (SSID)</label>
+                                <input type="text" id="wifi-ssid" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="wifi-password">Password</label>
+                                <input type="password" id="wifi-password">
+                            </div>
+                            <button type="submit" class="btn-primary">Connetti e Riavvia</button>
+                        </form>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+    </div>
+
+    <!-- Modale Aggiungi Pianta -->
+    <div id="add-plant-modal" class="modal-overlay">
+        <div class="modal-content">
+            <header><h3 id="modal-plant-type-name">Aggiungi Pianta</h3><button class="modal-close-btn">&times;</button></header>
+            <form id="add-plant-form">
+                <input type="hidden" id="modal-plant-type-id">
+                <div class="form-group"><label for="modal-plant-name">Nome Personalizzato</label><input type="text" id="modal-plant-name" required placeholder="Es. Pomodoro Balcone"></div>
+                <div class="form-group"><label for="modal-plant-notes">Note (opzionale)</label><textarea id="modal-plant-notes" rows="3" placeholder="Es. Vicino alla finestra"></textarea></div>
+                <button type="submit" class="btn-primary">Aggiungi al Giardino</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast-notification" class="toast"></div>
+    <script src="app.js"></script>
+</body>
+</html>
+
